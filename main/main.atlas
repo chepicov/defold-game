@@ -1,0 +1,33 @@
+images {
+  image: "/assets/level/leftWall.png"
+}
+images {
+  image: "/assets/level/leftWall.png"
+}
+images {
+  image: "/assets/level/background.png"
+}
+images {
+  image: "/assets/level/hero.png"
+}
+images {
+  image: "/assets/level/hero.png"
+}
+images {
+  image: "/assets/level/leftBlock.png"
+}
+images {
+  image: "/assets/level/rightBlock.png"
+}
+images {
+  image: "/assets/level/rightWall.png"
+}
+images {
+  image: "/assets/level/wall.png"
+}
+images {
+  image: "/assets/level/block.png"
+}
+margin: 0
+extrude_borders: 0
+inner_padding: 0

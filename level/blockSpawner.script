@@ -1,0 +1,61 @@
+local grid = 190
+function init(self)
+	self.blockIds = {}
+	self.gridw = 0
+	self.speed = 250
+	self.activeBlock = nil
+	math.randomseed(os.clock()*100000000000)
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	self.speed = self.speed + dt * 30
+	self.gridw = self.gridw + self.speed * dt
+	if self.gridw > grid then
+		self.gridw = 0
+		local isLeft = math.random() > 0.5
+		local factory = isLeft and "#leftWallFactory" or "#rightWallFactory"
+		local minX = isLeft and 142 or 320
+		local maxX = isLeft and 320 or 498
+		local blockIds = collectionfactory.create(factory)
+		msg.post(blockIds[hash("/block")], "set_borders", { minX = minX, maxX = maxX })
+		msg.post(blockIds[hash("/wall")], "set_speed", { speed = self.speed })
+		table.insert(self.blockIds, blockIds[hash("/block")])
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash "remove_block" then
+		for i,p in ipairs(self.blockIds) do
+			if p == message.id then
+				table.remove(self.blockIds, i)
+				go.delete(p)
+			end
+		end
+	elseif message_id == hash "touchstart_block" then
+		if self.activeBlock == nil then
+			self.activeBlock = message.id
+		end
+	elseif message_id == hash "touchend_block" then
+		self.activeBlock = nil
+	elseif message.id == self.activeBlock and message_id == hash "touch_block" then
+		msg.post(sender, "move_block", { x = message.x })
+	elseif message_id == hash "reset" then
+		self.speed = 250
+		msg.post("gui#gui", "reset")
+	end
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Remove this function if not needed
+end

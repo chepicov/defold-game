@@ -1,0 +1,60 @@
+local halfWidth = 50
+local halfHeight = 40
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	self.minX = 0
+	self.maxX = 0
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	if go.get_world_position().y < 0 then
+		msg.post(".", "release_input_focus")
+		msg.post("/blockFactory#blockSpawner", "remove_block", { id = go.get_id() })
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash "set_borders" then
+		self.minX = message.minX
+		self.maxX = message.maxX
+	elseif message_id == hash "move_block" then
+		local pos = go.get_position()
+		local spritePos = go.get_world_position()
+		local grid = spritePos.x - pos.x
+		go.set_position(vmath.vector3(math.max(self.minX - grid, math.min(self.maxX - grid, message.x - grid)) , pos.y, 0))
+	end
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("touch") then
+		if action.released then
+			msg.post("/blockFactory#blockSpawner", "touchend_block")
+			return
+		end
+		local spritePos = go.get_world_position()
+		local mouseX = action.x
+		local mouseY = action.y
+		local rightBoundary = spritePos.x - halfWidth
+		local leftBoundary = spritePos.x + halfWidth
+		local upperBoundary = spritePos.y + halfHeight
+		local downBoundary = spritePos.y - halfHeight
+		msg.post("/blockFactory#blockSpawner", "touch_block", { id = go.get_id(), x = mouseX })
+
+		if mouseX >= rightBoundary and mouseX <= leftBoundary and mouseY >= downBoundary and mouseY <= upperBoundary then
+			if action.pressed then
+				msg.post("/blockFactory#blockSpawner", "touchstart_block", { id = go.get_id() })
+			end
+		end
+	end
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Remove this function if not needed
+end
