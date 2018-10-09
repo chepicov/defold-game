@@ -1,10 +1,4 @@
 images {
-  image: "/assets/level/leftWall.png"
-}
-images {
-  image: "/assets/level/leftWall.png"
-}
-images {
   image: "/assets/level/background.png"
 }
 images {
@@ -14,12 +8,6 @@ images {
   image: "/assets/level/hero.png"
 }
 images {
-  image: "/assets/level/leftBlock.png"
-}
-images {
-  image: "/assets/level/rightBlock.png"
-}
-images {
   image: "/assets/level/rightWall.png"
 }
 images {
@@ -27,6 +15,12 @@ images {
 }
 images {
   image: "/assets/level/block.png"
+}
+images {
+  image: "/assets/level/arrow.png"
+}
+images {
+  image: "/assets/level/arrowWall.png"
 }
 margin: 0
 extrude_borders: 0

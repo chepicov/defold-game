@@ -1,10 +1,16 @@
+local global = require "global"
+
 local grid = 190
+local minLeft = 142
+local minRight = 320
+local maxRight = 498
+
 function init(self)
 	self.blockIds = {}
 	self.gridw = 0
-	self.speed = 250
+	self.speed = global.speed
 	self.activeBlock = nil
-	math.randomseed(os.clock()*100000000000)
+	math.randomseed(os.clock()*1000000000)
 end
 
 function final(self)
@@ -13,14 +19,14 @@ function final(self)
 end
 
 function update(self, dt)
-	self.speed = self.speed + dt * 30
+	self.speed = self.speed + math.sqrt(dt * global.koef)
 	self.gridw = self.gridw + self.speed * dt
 	if self.gridw > grid then
 		self.gridw = 0
 		local isLeft = math.random() > 0.5
 		local factory = isLeft and "#leftWallFactory" or "#rightWallFactory"
-		local minX = isLeft and 142 or 320
-		local maxX = isLeft and 320 or 498
+		local minX = isLeft and minLeft or minRight
+		local maxX = isLeft and minRight or maxRight
 		local blockIds = collectionfactory.create(factory)
 		msg.post(blockIds[hash("/block")], "set_borders", { minX = minX, maxX = maxX })
 		msg.post(blockIds[hash("/wall")], "set_speed", { speed = self.speed })
@@ -45,7 +51,7 @@ function on_message(self, message_id, message, sender)
 	elseif message.id == self.activeBlock and message_id == hash "touch_block" then
 		msg.post(sender, "move_block", { x = message.x })
 	elseif message_id == hash "reset" then
-		self.speed = 250
+		self.speed = global.speed
 		msg.post("gui#gui", "reset")
 	end
 end

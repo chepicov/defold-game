@@ -1,5 +1,7 @@
+local global = require "global"
+
 function init(self)
-	self.speed = 250
+	self.speed = global.speed
 	self.active = true
 end
 
@@ -12,7 +14,7 @@ function update(self, dt)
 	if not go.get("/hero#script", "is_alive") then
 		go.delete(".", true)
 	end
-	self.speed = self.speed + dt * 30
+	self.speed = self.speed + math.sqrt(dt * global.koef)
 	local pos = go.get_position()
 	pos.y = pos.y - self.speed * dt
 	go.set_position(pos)

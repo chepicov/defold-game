@@ -1,5 +1,5 @@
-local halfWidth = 50
-local halfHeight = 40
+local halfWidth = 80
+local halfHeight = 50
 
 function init(self)
 	msg.post(".", "acquire_input_focus")
